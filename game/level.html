@@ -1,0 +1,88 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Mirror Maze - Level</title>
+
+    <link rel="stylesheet" href="game.css">
+</head>
+
+<body>
+
+    <main class="game-container">
+
+        <!-- NEON GAME TITLE -->
+        <h1 class="neon-title">MIRROR MAZE</h1>
+
+        <!-- LEVEL INFORMATION -->
+        <header class="level-info">
+            <h2 id="level-title">Level 1</h2>
+            <p id="lives">Lives: ❤️ ❤️ ❤️</p>
+        </header>
+
+        <!-- GAME BOARD -->
+        <div id="game-board"
+             aria-label="Mirror Maze puzzle">
+        </div>
+
+        <!-- GAME BUTTONS -->
+        <div class="game-buttons">
+
+            <button id="fire-button" type="button">
+                FIRE LASERS
+            </button>
+
+            <button id="hint-button" type="button">
+                USE HINT (1)
+            </button>
+
+        </div>
+
+        <!-- GAME MESSAGES -->
+        <p id="message" aria-live="polite">
+            Connect the lasers to their matching crystals!
+        </p>
+
+        <!-- WIN / GAME OVER SCREEN -->
+        <div id="result-screen"
+             class="result-screen hidden"
+             role="dialog"
+             aria-modal="true"
+             aria-labelledby="result-title">
+
+            <div id="fireworks"></div>
+
+            <div class="result-content">
+
+                <h1 id="result-title"></h1>
+
+                <p id="result-text"></p>
+
+                <button id="retry-button" type="button">
+                    PLAY AGAIN
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- BACK TO HOME -->
+        <a href="../index.html" class="home-button">
+            BACK TO HOME
+        </a>
+
+    </main>
+
+    <!-- LEVEL CONFIGURATIONS -->
+    <script src="levels.js"></script>
+
+    <!-- SHARED GAME ENGINE -->
+    <script src="game.js"></script>
+
+</body>
+</html>

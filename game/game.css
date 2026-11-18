@@ -1,0 +1,912 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Rajdhani:wght@400;500;600;700&display=swap');
+
+/* ==========================================
+   1. GENERAL
+========================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: #101525;
+    color: white;
+    font-family: 'Rajdhani', sans-serif;
+    text-align: center;
+}
+
+button,
+.home-button {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+button {
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
+}
+
+/* ==========================================
+   2. GAME CONTAINER
+========================================== */
+
+.game-container {
+    width: 100%;
+    max-width: 950px;
+    margin: 20px auto;
+    padding: 20px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* ==========================================
+   3. NEON TITLE
+========================================== */
+
+.neon-title {
+    width: 100%;
+    margin: 15px 0 25px 40px;
+
+    font-family: 'Audiowide', sans-serif;
+    font-size: clamp(32px, 7.5vw, 90px);
+    font-weight: 400;
+    letter-spacing: 2px;
+    line-height: 1.3;
+
+    color: #b3ffc7;
+    -webkit-text-stroke: 1.5px currentColor;
+
+    text-shadow:
+        0 0 5px #00ff55,
+        0 0 10px #00ff55,
+        0 0 20px #00ff55,
+        0 0 40px #00ff55,
+        0 0 70px rgba(0, 255, 85, 0.6);
+
+    /* Keep the title glowing without flickering */
+    animation: none;
+}
+
+/* ==========================================
+   4. LEVEL INFORMATION AND LIVES
+========================================== */
+
+.level-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.level-info h2 {
+    margin: 0;
+    font-family: 'Audiowide', sans-serif;
+    font-size: 40px;
+    font-weight: 400;
+    color: #6bcaff;
+}
+
+#lives {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+/* ==========================================
+   5. GAME BOARD
+========================================== */
+
+#game-board {
+    --clue-size: 30px;
+
+    display: grid;
+    grid-template-columns:
+        var(--clue-size) repeat(5, minmax(0, 1fr));
+
+    width: min(100%, 510px);
+    margin: 25px 20px 0 0;
+    flex-shrink: 0;
+}
+
+.clue {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.cell {
+    aspect-ratio: 1;
+    min-width: 0;
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #f8fafc;
+    border: 1px solid #333;
+    color: #333;
+
+    font-size: clamp(20px, 5vw, 42px);
+    cursor: pointer;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.cell:focus-visible {
+    outline: 3px solid #6bcaff;
+    outline-offset: -4px;
+    z-index: 4;
+}
+
+
+/* ==========================================
+   BLOCKED SQUARES
+========================================== */
+
+.cell.blocked {
+    background: repeating-linear-gradient(
+        135deg,
+        #11131d,
+        #11131d 8px,
+        #252838 8px,
+        #252838 16px
+    );
+
+    border: 2px solid #55586d;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 2rem;
+    font-weight: bold;
+
+    cursor: not-allowed;
+    box-shadow: inset 0 0 15px #000;
+}
+
+/* ==========================================
+   6. LASER SOURCES
+========================================== */
+
+/* Default green laser */
+
+.source {
+    background: #e0ffe6;
+    color: #00c943;
+    text-shadow: 0 0 12px #00ff55;
+}
+
+/* Blue laser */
+
+.blue-source {
+    background: #e0f5ff;
+    color: #38bdf8;
+    text-shadow: 0 0 12px #38bdf8;
+}
+
+/* ==========================================
+   7. CRYSTAL CONTAINERS
+========================================== */
+
+.target {
+    background: #e0ffe6;
+    overflow: visible;
+}
+
+/* Blue crystal's board square */
+
+.blue-target {
+    background: #e0f5ff;
+}
+
+/* ==========================================
+   8. CRYSTAL SHAPE
+========================================== */
+
+.crystal {
+    width: 62%;
+    height: 72%;
+    position: relative;
+    z-index: 2;
+
+    filter: brightness(0.8);
+
+    transition:
+        filter 0.3s ease,
+        transform 0.3s ease;
+}
+
+.crystal svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+/* Default emerald crystal colors */
+
+.gem-outline {
+    fill: #145b40;
+    stroke: #257e57;
+    stroke-width: 2;
+    stroke-linejoin: round;
+}
+
+.gem-top-left {
+    fill: #62b58a;
+}
+
+.gem-top-right {
+    fill: #348b63;
+}
+
+.gem-center {
+    fill: #8bd5a7;
+}
+
+.gem-left {
+    fill: #267d54;
+}
+
+.gem-right {
+    fill: #104d38;
+}
+
+.gem-lines {
+    fill: none;
+    stroke: rgba(220, 255, 230, 0.5);
+    stroke-width: 1.5;
+    stroke-linejoin: round;
+}
+
+/* ==========================================
+   9. BLUE CRYSTAL COLORS
+
+   These override the green SVG colors.
+   No hue rotation is needed.
+========================================== */
+
+.blue-crystal .gem-outline {
+    fill: #174b7a;
+    stroke: #318bc7;
+}
+
+.blue-crystal .gem-top-left {
+    fill: #8ddaff;
+}
+
+.blue-crystal .gem-top-right {
+    fill: #419bd5;
+}
+
+.blue-crystal .gem-center {
+    fill: #b4eaff;
+}
+
+.blue-crystal .gem-left {
+    fill: #287eb8;
+}
+
+.blue-crystal .gem-right {
+    fill: #103d70;
+}
+
+.blue-crystal .gem-lines {
+    stroke: rgba(220, 245, 255, 0.65);
+}
+
+/* ==========================================
+   10. GREEN CRYSTAL ACTIVATION
+========================================== */
+
+.crystal-active {
+    transform: scale(1.08);
+
+    filter:
+        brightness(1.6)
+        drop-shadow(0 0 6px #00ff55)
+        drop-shadow(0 0 14px #00ff55);
+
+    animation: greenCrystalGlow 1.5s ease-in-out infinite;
+}
+
+.crystal-active .gem-outline {
+    fill: #00b94d;
+    stroke: #75ffab;
+}
+
+.crystal-active .gem-top-left {
+    fill: #baffd0;
+}
+
+.crystal-active .gem-top-right {
+    fill: #60ff99;
+}
+
+.crystal-active .gem-center {
+    fill: #e0ffeb;
+}
+
+.crystal-active .gem-left {
+    fill: #23ef73;
+}
+
+.crystal-active .gem-right {
+    fill: #00a843;
+}
+
+.crystal-active .gem-lines {
+    stroke: rgba(255, 255, 255, 0.85);
+}
+
+@keyframes greenCrystalGlow {
+    0%, 100% {
+        filter:
+            brightness(1.4)
+            drop-shadow(0 0 6px #00ff55)
+            drop-shadow(0 0 12px #00ff55);
+    }
+
+    50% {
+        filter:
+            brightness(1.8)
+            drop-shadow(0 0 10px #00ff55)
+            drop-shadow(0 0 20px #00ff55);
+    }
+}
+
+/* ==========================================
+   11. BLUE CRYSTAL ACTIVATION
+
+   Blue stays blue when hit by its laser.
+========================================== */
+
+.blue-crystal.crystal-active {
+    transform: scale(1.08);
+
+    filter:
+        brightness(1.6)
+        drop-shadow(0 0 6px #38bdf8)
+        drop-shadow(0 0 14px #38bdf8);
+
+    animation: blueCrystalGlow 1.5s ease-in-out infinite;
+}
+
+/* Bright blue activated crystal faces */
+
+.blue-crystal.crystal-active .gem-outline {
+    fill: #168bd1;
+    stroke: #9ae7ff;
+}
+
+.blue-crystal.crystal-active .gem-top-left {
+    fill: #d5f6ff;
+}
+
+.blue-crystal.crystal-active .gem-top-right {
+    fill: #72d7ff;
+}
+
+.blue-crystal.crystal-active .gem-center {
+    fill: #e2f8ff;
+}
+
+.blue-crystal.crystal-active .gem-left {
+    fill: #38bdf8;
+}
+
+.blue-crystal.crystal-active .gem-right {
+    fill: #0879c0;
+}
+
+.blue-crystal.crystal-active .gem-lines {
+    stroke: rgba(255, 255, 255, 0.95);
+}
+
+/* Blue-only glow animation */
+
+@keyframes blueCrystalGlow {
+    0%, 100% {
+        filter:
+            brightness(1.4)
+            drop-shadow(0 0 6px #38bdf8)
+            drop-shadow(0 0 12px #38bdf8);
+    }
+
+    50% {
+        filter:
+            brightness(1.8)
+            drop-shadow(0 0 10px #38bdf8)
+            drop-shadow(0 0 20px #38bdf8);
+    }
+}
+
+/* ==========================================
+   12. MIRRORS
+========================================== */
+
+.mirror {
+    background: #e8edf2;
+}
+
+.mirror::after {
+    content: "";
+    position: absolute;
+
+    width: 75%;
+    height: clamp(5px, 1vw, 9px);
+
+    border-radius: 3px;
+
+    background: linear-gradient(
+        to bottom,
+        #d8c5e3 0%,
+        #dce5ed 25%,
+        #718096 55%,
+        #263445 100%
+    );
+
+    box-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.3),
+        0 0 4px rgba(255, 255, 255, 0.8);
+}
+
+/* Forward slash / */
+
+.mirror-forward::after {
+    transform: rotate(-45deg);
+}
+
+/* Backslash \ */
+
+.mirror-backward::after {
+    transform: rotate(45deg);
+}
+
+/* ==========================================
+   13. HINTED MIRRORS
+========================================== */
+
+.hinted-mirror {
+    background: #f0e0ff;
+    cursor: default;
+}
+
+.hint-reveal {
+    animation: hintReveal 1.2s ease-in-out 2;
+}
+
+@keyframes hintReveal {
+    0%, 100% {
+        background: #f0e0ff;
+    }
+
+    50% {
+        background: #d6a5ff;
+
+        box-shadow:
+            inset 0 0 15px #BF00FF,
+            0 0 18px #BF00FF;
+    }
+}
+
+/* ==========================================
+   14. LASER BEAMS
+========================================== */
+
+.laser-beam {
+    position: absolute;
+
+    background: #32ff65;
+
+    box-shadow:
+        0 0 6px #00ff55,
+        0 0 12px rgba(0, 255, 85, 0.65);
+
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* ==========================================
+   15. GAME BUTTONS
+========================================== */
+
+.game-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+
+    gap: 18px;
+    width: 100%;
+}
+
+#fire-button,
+#hint-button {
+    min-height: 52px;
+    padding: 14px 24px;
+
+    border: none;
+    border-radius: 12px;
+
+    font-family: 'Audiowide', sans-serif;
+    font-size: 16px;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+/* Fire lasers button */
+
+#fire-button {
+    background: #32e66c;
+    color: #101525;
+
+    box-shadow:
+        0 0 15px #8affab,
+        0 0 30px rgba(0, 255, 85, 0.4);
+}
+
+#fire-button:hover:not(:disabled) {
+    background: #8affab;
+    transform: scale(1.05);
+}
+
+/* Hint button */
+
+#hint-button {
+    background: #BF00FF;
+    color: #101525;
+
+    box-shadow:
+        0 0 10px #BF00FF,
+        0 0 22px rgba(191, 0, 255, 0.5);
+}
+
+#hint-button:hover:not(:disabled) {
+    background: #d34dff;
+    transform: scale(1.05);
+}
+
+#hint-button:disabled {
+    background: #49305a;
+    color: #d8c5e3;
+    box-shadow: none;
+}
+
+/* ==========================================
+   16. GAME MESSAGE
+========================================== */
+
+#message {
+    min-height: 35px;
+    margin: 25px 0 10px;
+
+    font-size: 20px;
+    font-weight: 700;
+}
+
+/* ==========================================
+   17. BACK TO HOME BUTTON
+========================================== */
+
+.home-button {
+    display: inline-block;
+
+    margin-top: 15px;
+    padding: 8px 15px;
+
+    background: #182b45;
+    color: #6bcaff;
+
+    border: 2px solid #6bcaff;
+    border-radius: 12px;
+
+    font-size: 12px;
+    text-decoration: none;
+
+    box-shadow: 0 0 10px rgba(107, 202, 255, 0.3);
+}
+
+.home-button:hover {
+    background: #23405d;
+}
+
+/* ==========================================
+   18. WRONG LASER PATH - BOARD SHAKE
+========================================== */
+
+.laser-shake {
+    animation: laserShake 0.3s ease-in-out 2;
+}
+
+@keyframes laserShake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+
+    25%, 75% {
+        transform: translateX(-4px);
+    }
+
+    50% {
+        transform: translateX(4px);
+    }
+}
+
+/* ==========================================
+   19. WIN / GAME OVER SCREEN
+========================================== */
+
+.result-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+    overflow: hidden;
+
+    background: rgba(5, 10, 25, 0.94);
+}
+
+.hidden {
+    display: none;
+}
+
+.result-content {
+    position: relative;
+    z-index: 2;
+
+    width: 100%;
+    max-width: 600px;
+    padding: 25px;
+}
+
+#result-title {
+    margin: 0 0 15px;
+
+    font-family: 'Audiowide', sans-serif;
+    font-size: clamp(36px, 9vw, 90px);
+
+    animation: popIn 0.6s ease-out;
+}
+
+#result-text {
+    font-size: clamp(18px, 4vw, 25px);
+}
+
+/* Winning title */
+
+.win-title {
+    color: #65ff91;
+
+    text-shadow:
+        0 0 15px #00ff55,
+        0 0 35px #00ff55,
+        0 0 65px #00ff55;
+}
+
+/* Game over title */
+
+.lose-title {
+    color: #ff3434;
+
+    text-shadow:
+        0 0 15px #ff0000,
+        0 0 35px #ff0000;
+}
+
+/* Retry / Next level button */
+
+#retry-button {
+    margin-top: 25px;
+    padding: 15px 35px;
+
+    border: none;
+    border-radius: 12px;
+
+    background: #32e66c;
+    color: #101525;
+
+    font-family: 'Audiowide', sans-serif;
+    font-size: 18px;
+}
+
+/* ==========================================
+   20. FIREWORKS
+========================================== */
+
+#fireworks {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.firework {
+    position: absolute;
+
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+
+    background: var(--color);
+    box-shadow: 0 0 12px var(--color);
+
+    animation: explode 1.3s ease-out forwards;
+    animation-delay: var(--delay, 0s);
+
+    opacity: 0;
+}
+
+@keyframes explode {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform:
+            translate(var(--x), var(--y))
+            scale(0);
+
+        opacity: 0;
+    }
+}
+
+@keyframes popIn {
+    0% {
+        transform: scale(0.3);
+        opacity: 0;
+    }
+
+    70% {
+        transform: scale(1.15);
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* ==========================================
+   21. TABLET RESPONSIVENESS
+========================================== */
+
+@media (max-width: 768px) {
+    .game-container {
+        margin: 15px auto;
+        padding: 15px;
+    }
+
+    .neon-title {
+        font-size: clamp(30px, 7vw, 58px);
+        -webkit-text-stroke: 0.8px currentColor;
+    }
+
+    .level-info h2 {
+        font-size: 32px;
+    }
+}
+
+/* ==========================================
+   22. PHONE RESPONSIVENESS
+========================================== */
+
+@media (max-width: 600px) {
+    .game-container {
+        margin: 10px auto;
+        padding: 12px 10px;
+    }
+
+    .neon-title {
+        font-size: clamp(25px, 7vw, 40px);
+        letter-spacing: 0;
+        margin: 12px 0 20px;
+        -webkit-text-stroke: 0.5px currentColor;
+    }
+
+    .level-info h2 {
+        font-size: 27px;
+    }
+
+    #lives {
+        font-size: 19px;
+    }
+
+    #game-board {
+        --clue-size: 23px;
+        width: min(100%, 420px);
+        margin: 20px auto;
+        transform: translateX(10px);
+    }
+
+    .clue {
+        font-size: 15px;
+    }
+
+    .cell {
+        font-size: clamp(20px, 6vw, 34px);
+    }
+
+    .game-buttons {
+        gap: 12px;
+    }
+
+    #fire-button,
+    #hint-button {
+        font-size: 13px;
+        padding: 12px 15px;
+        min-height: 48px;
+        min-width: 145px;
+    }
+
+    #message {
+        font-size: 19px;
+        margin-top: 22px;
+    }
+
+    .home-button {
+        margin-top: 12px;
+    }
+}
+
+/* ==========================================
+   23. EXTRA SMALL PHONES
+========================================== */
+
+@media (max-width: 380px) {
+    .neon-title {
+        font-size: 25px;
+    }
+
+    #fire-button,
+    #hint-button {
+        width: min(100%, 280px);
+    }
+
+    .game-buttons {
+        gap: 10px;
+    }
+}
+
+/* ==========================================
+   24. REDUCED MOTION ACCESSIBILITY
+========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .neon-title,
+    .crystal-active,
+    .hint-reveal,
+    .firework,
+    #result-title {
+        animation: none;
+    }
+
+    .start-button,
+    button {
+        transition: none;
+    }
+}
