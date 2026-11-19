@@ -840,7 +840,7 @@ button:disabled {
         --clue-size: 23px;
         width: min(100%, 420px);
         margin: 20px auto;
-        transform: translateX(10px);
+        transform: none;
     }
 
     .clue {
